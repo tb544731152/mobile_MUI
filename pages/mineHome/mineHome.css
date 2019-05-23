@@ -1,0 +1,125 @@
+div, ul, li, p, span{
+	padding: 0;
+	margin: 0;
+}
+ul, li{
+	list-style: none;
+}
+.mine-home-arrow:after{
+	content: '';
+	display: inline-block;
+	width: 1.92rem;
+	height: 1.92rem;
+	background: url('../../image/mineHome/moreArrow.png') no-repeat left top;
+	background-size: 100% 100%;
+	position: absolute;
+	right: 0;
+}
+.mine-home{
+	width: 100%;
+	min-height: 100vh;
+	font-size: 1rem;
+	font-weight: normal;
+	color: #2A2E2F;
+	background-color: #FFFFFF;
+}
+.mine-home-top{
+	height: 9rem;
+	background-color: #6488FF;
+	padding: 3.5rem 1.04rem 2rem 1.2rem;
+	overflow: hidden;
+	position: relative;
+}
+.mine-home-top:after{
+	content: '';
+	display: inline-block;
+	width: 1.92rem;
+	height: 1.92rem;
+	background: url('../../image/mineHome/moreArrow.png') no-repeat left top;
+	background-size: 100% 100%;
+	position: absolute;
+	right: 1.04rem;
+	top: 4.3rem;
+}
+.mine-home-top .mine-home-top-avatar{
+	float: left;
+	width: 3.8rem;
+	height: 3.8rem;
+	border-radius: 50%;
+	overflow: hidden;
+}
+.mine-home-top .mine-home-top-avatar img{
+	width: 100%;
+	height: 100%;
+}
+.mine-home-top .mine-home-top-info{
+	float: left;
+	margin: 0.8rem 0 0 1.2rem;
+	font-size: 0.96rem;
+	color: #FFFFFF;
+	font-weight: 500;
+	line-height: 1.44rem;
+}
+.mine-home-top-info-name{
+	font-size: 1.44rem;
+	font-weight: bold;
+}
+.mine-home-menu{
+	font-weight: 500;
+}
+.mine-home-menu ul li{
+	display: flex;
+	align-items: center;
+	padding: 0.6rem 0;
+	margin: 0 0.6rem 0 1rem;
+	border-bottom: 1px solid #E2E2EF;
+	position: relative;
+}
+.mine-home-menu ul .mine-home-menu-walletli{
+	border-bottom: none;
+}
+.mine-home-menu ul .mine-home-menu-bg{
+	width: 100%;
+	height: 1.2rem;
+	background-color: #F9F9F9;
+	border-bottom: none;
+	margin: 0;
+}
+.mine-home-menu ul li span:first-of-type{
+	display: inline-block;
+	width: 1.72rem;
+	height: 1.72rem;
+	margin: 0 0.52rem 0 0;
+}
+.mine-home-menu ul li .mine-home-menu-wallet{
+	background: url('../../image/mineHome/wallet.png') no-repeat left center;
+	background-size: 100% 100%;
+}
+
+.mine-home-menu ul li .mine-home-menu-money{
+	flex: 1;
+	text-align: right;
+	margin-right: 1.92rem;
+}
+.mine-home-menu ul li .mine-home-menu-album{
+	background: url('../../image/mineHome/album.png') no-repeat left center;
+	background-size: 100% 100%;
+}
+.mine-home-menu ul li .mine-home-menu-archive{
+	background: url('../../image/mineHome/archive.png') no-repeat left center;
+	background-size: 100% 100%;
+}
+.mine-home-menu ul li .mine-home-menu-contribute{
+	background: url('../../image/mineHome/contribute.png') no-repeat left center;
+	background-size: 100% 100%;
+}
+.mine-home-menu ul li .mine-home-menu-finance{
+	background: url('../../image/mineHome/finance.png') no-repeat left center;
+	background-size: 100% 100%;
+}
+.mine-home-menu ul li .mine-home-menu-setting{
+	background: url('../../image/mineHome/setting.png') no-repeat left center;
+	background-size: 100% 100%;
+}
+
+
