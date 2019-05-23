@@ -1,0 +1,39 @@
+/* 底部选项卡 */
+/* 底部选项卡 */
+.mui-bar-tab {
+	/*background-color: #16102E;*/
+}
+.mui-bar-tab .mui-tab-item.mui-active{
+	color: #6C87FC;
+}
+.hide {
+	display: none;
+}
+.mui-bar a{
+	padding: 2rem 0 0 0;
+	font-size: 0.75rem;
+}
+.mui-bar .tab-chatlist{
+	background: url('../image/index/chatlist.png') no-repeat center 0.26rem;
+	background-size: 1.52rem 1.52rem;
+}
+.mui-bar-tab .tab-chatlist.mui-active{
+	background: url('../image/index/chatlist-active.png') no-repeat center 0.26rem;
+	background-size: 1.52rem 1.52rem;
+}
+.mui-bar .tab-maillist{
+	background: url('../image/index/maillist.png') no-repeat center 0.26rem;
+	background-size: 1.52rem 1.52rem;
+}
+.mui-bar-tab .tab-maillist.mui-active{
+	background: url('../image/index/maillist-active.png') no-repeat center 0.26rem;
+	background-size: 1.52rem 1.52rem;
+}
+.mui-bar .tab-mine{
+	background: url('../image/index/mine.png') no-repeat center 0.26rem;
+	background-size: 1.52rem 1.52rem;
+}
+.mui-bar-tab .tab-mine.mui-active{
+	background: url('../image/index/mine-active.png') no-repeat center 0.26rem;
+	background-size: 1.52rem 1.52rem;
+}

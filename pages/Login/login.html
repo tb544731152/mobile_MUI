@@ -1,0 +1,188 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<script src="../../js/mui.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="login.css"/>
+		<script src="../../common/js/CheckFormUtil.js"></script>
+		<script src="../../config/TimConfig.js"></script>
+		<script src="../../common/js/TimUtil.js"></script>
+		<script src="../../api/Login/login.js"></script>
+		<script src="../../config/HttpConstantCode.js"></script>
+	</head>
+	<body>
+		<div class="login-wrap">
+			<div class="login-content">
+				<div class="login-logo">
+					<img class="logo" src="../../image/ico/logo.png" alt="" />
+				</div>
+				<form class="login-form" onsubmit="return false;">
+					<div class="login-group">
+						<div class="login-control">
+							 <img class="login-phone" src="../../image/ico/phone.png" />
+							 <input id="phone" type="text" class="login-input" placeholder="手机号">
+						</div>
+						<!-- <div class="closeit">
+							x
+						</div> -->
+				    </div>
+				    <div class="login-group">
+						<div class="login-control">
+							<img class="login-phone" src="../../image/ico/yanzheng.png" />
+							 <input id="code" type="text" class="login-input" placeholder="短信验证码">
+						</div>
+						<div class="closeit">
+							<!-- <div class="close">
+								x
+							</div> -->
+							<!-- 优化时不使用button -->
+							<button id="send_code" class="message" type="button">获取验证码</button>
+						</div>
+				    </div>
+				    <div class="login-group">
+						<div class="box-button">
+							 <button class="input-button" id="loginButton">登录</button>
+						</div>
+				    </div>
+				</form>	
+				<div class="login-profile">
+					<div class="profile-content">
+						<div class="other">
+							注：使用短信验证码即可登录，无须注册
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			/**
+			 * 获取录入元素数据
+			 * 校验录入数据
+			 * 获取登录账户,密码,手机唯一标识码
+			 * 登陆成功缓存用户信息
+			 * 跳转至主页
+			 * ! 是否以登录,登录跳转主页
+			 * ! 禁用返回
+			 */
+			mui.init()
+			mui.back = function() {return false}
+			mui.plusReady(function(){
+				
+					var cacheUser = window.TimUtil.getCacheNowUserInfo()
+					if (cacheUser != null) {
+						var phone =  cacheUser.addresscode;
+						console.log(phone)
+						if(window.TimUtil.isNotNull(phone)){
+							var meWebview = plus.webview.getWebviewById('me.html')
+							var contactWebview = plus.webview.getWebviewById('contact.html')
+							mui.fire(meWebview, window.TimConfig.timSubscribe.refreshUserInfoSubscribe)
+							mui.fire(contactWebview, window.TimConfig.timSubscribe.refreshContactContactListSubscribe)
+							mui.openWindow({
+								url: '../../index.html',
+								id: 'index.html',
+								show: {autoShow: true,aniShow:'none',duration: 0}
+							})
+						}else{
+							mui.openWindow({
+								url: '../Completion/completion.html',
+								id: 'completion.html',
+								show: {autoShow: true,aniShow:'none',duration: 0}
+							})
+							window.TimUtil.showToast('请补全信息', 'success')
+						}
+						
+					}
+				var phoneDOM = document.getElementById('phone')
+				var codeDOM = document.getElementById('code')
+				var send_code=document.getElementById("send_code");
+				
+				send_code.addEventListener('tap',function(){
+					if(send_code.innerHTML!='获取验证码'){
+						return;
+					}
+					var phone=phoneDOM.value;
+					console.log(phone)
+					if(phone==''){
+						window.TimUtil.showToast("手机号码不能为空", 'error');
+						return;
+					}
+					if(phone.length!=11){
+						window.TimUtil.showToast("手机号码位数不正确", 'error');
+						return;
+					}
+					var myreg=/^1[3|4|5|8][0-9]\d{4,8}$/;
+					if(!myreg.test(phone)){
+						window.TimUtil.showToast("请输入有效的手机号码", 'error');
+						return;
+					}
+					
+					window.LoginApi.getCode({
+						phone
+					}, function(data){
+						console.log(data.data)
+						if (data.code == HttpConstantCode.successGetCode) {
+								window.TimUtil.showToast('发送成功', 'success')
+								var num=60;
+								var timer=setInterval(function(){
+									num--;
+									if(num==0){
+										send_code.innerHTML='获取验证码';
+										clearInterval(timer);
+									}else{
+										send_code.innerHTML=num+'s';
+									}
+								},1000)
+						} else {
+							window.TimUtil.showToast(data.msg, 'error')
+						}
+					})
+				})
+				
+				
+				
+				var loginButton = document.getElementById('loginButton')
+				loginButton.addEventListener("tap", function(e){
+					e.preventDefault()
+					e.stopPropagation()
+					var appId = plus.push.getClientInfo().clientid
+					var phone = phoneDOM.value
+					var code = codeDOM.value
+						window.LoginApi.loginApi({
+							phone,  code, appId
+						}, function(data){
+							console.log(JSON.stringify(data))
+							if (data.code == HttpConstantCode.needComplate) {
+								var user = data.result
+								window.TimUtil.setCacheNowUserInfo(user)
+								mui.openWindow({
+									url: '../Completion/completion.html',
+									id: 'completion.html',
+									show: {autoShow: true,aniShow:'none',duration: 0}
+								})
+								window.TimUtil.showToast('登陆成功', 'success')
+							} else if(data.code == HttpConstantCode.successCode){
+								var user = data.result
+								window.TimUtil.setCacheNowUserInfo(user)
+								mui.fire(meWebview, window.TimConfig.timSubscribe.refreshUserInfoSubscribe)
+								mui.fire(contactWebview, window.TimConfig.timSubscribe.refreshContactContactListSubscribe)
+								mui.openWindow({
+									url: '../../index.html',
+									id: 'index.html',
+									show: {autoShow: true,aniShow:'none',duration: 0}
+								})
+								window.TimUtil.showToast('登陆成功', 'success')
+							}else{
+								window.TimUtil.showToast(data.msg, 'error')
+							}
+						})
+					
+				})
+				
+			}) 
+		</script>
+	</body>
+</html>

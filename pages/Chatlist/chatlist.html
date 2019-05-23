@@ -1,0 +1,477 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../common/css/header.css"/>
+		<link rel="stylesheet" type="text/css" href="../../download/font_icon/iconfont.css"/>
+		<link rel="stylesheet" type="text/css" href="chatlist.css"/>
+		<link rel="stylesheet" type="text/css" href="requesList.css"/>
+		<link rel="stylesheet" type="text/css" href="chatSnapshotList.css"/>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../download/jQuery/jquery-3.3.1.min.js"></script>
+		<script src="../../download/handlebars/handlebars-v4.0.12.js"></script>
+		<script src="../../config/TimConfig.js"></script>
+		<script src="../../common/js/TimUtil.js"></script>
+		<script src="../../api/Request/request.js"></script>
+		<script src="../../api/SingleChatMsg/singleChatMsg.js"></script>
+		<script src="../../api/GroupChatMsg/groupChatMsg.js"></script>
+		<script src="../../config/websocketContant.js"></script>
+		<script src="../../socket/webSocket.js"></script>
+		<script src="../../common/js/cacheChatHistory.js"></script>
+		<script src="../../common/js/cacheChatSnapshot.js"></script>
+		<script src="../../common/js/cacheContact.js"></script>
+		<script src="../../common/js/cacheGroupList.js"></script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav title-header">
+		    <h1 class="mui-title title-color">消息</h1>
+		    <a href="#openMenu" class="mui-pull-right mui-icon mui-icon-plusempty" style="color: #6C87FC;font-size: 30px;"></a>
+		</header>
+		<div class="container">
+			<div id="request-list" class="request-list">
+				
+			</div>
+			<div id="chatSnapshot-single-list" class="chatSnapshot-list">
+				
+			</div>
+			<div id="chatSnapshot-group-list" class="chatSnapshot-list">
+				
+			</div>
+		</div>
+		<div id="openMenu" class="mui-popover">
+		  <ul class="mui-table-view">
+		    <li class="mui-table-view-cell cell-item" id="addFriend"><a href="#"><span class="iconfont "></span>加好友</a></li>
+		    <li class="mui-table-view-cell cell-item" id="saoyisao"><a href="#"><span class="iconfont"></span>扫一扫</a></li>
+		  </ul>
+		</div>
+		<script type="text/javascript">
+			/**
+			 * 绑定弹出菜单
+			 * 加载后获取未处理的好友请求
+			 * 绑定好友请求按钮
+			 * 初始化网络连接
+			 * 绑定websocket监听
+			 * 收到消息将消息通知至指定webview
+			 * 缓存私聊本地聊天记录和快照记录
+			 * 缓存群聊本地聊天记录和快照记录
+			 * 点击快照后对快照记录进行已读取状态
+			 * 获取未上线时未签收的消息,保存至本地,保存至快照,并批量签收
+			 * 获取未读私聊群聊消息
+			 * 监听群聊消息
+			 * ! 群聊本人发送的消息不保存
+			 * ! 同意后更新好友列表
+			 * ! 收到消息后证明已签收
+			 * ! 同意请求被通过后刷新通讯录
+			 * ! 接收新的好友请求刷新请求列表
+			 * ! 通讯录缓存中获得好友信息
+			 * ！  删除本地记录
+			 */
+			mui.init()
+			mui.plusReady(function(){
+				window.TimUtil.setSystemStatusColor()
+				var user = window.TimUtil.getCacheNowUserInfo()
+				var selfWebview = plus.webview.currentWebview()
+				var indexWebview = plus.webview.getWebviewById('index.html')
+				var contactWebview = plus.webview.getWebviewById('contact.html')
+				window.TimWebsocket.init()
+				refreshAcceptRequest()
+				getSingleNoReadChatMsg()
+				getGroupNoReadChatMsg()
+				refreshSingleChatSnapshot()
+				refreshGroupChatSnapshot()
+				selfWebview.addEventListener('show', function() {
+					window.TimWebsocket.init()
+					refreshAcceptRequest()
+					getSingleNoReadChatMsg()
+					getGroupNoReadChatMsg()
+					refreshSingleChatSnapshot()
+					refreshGroupChatSnapshot()
+				})
+				mui('#chatSnapshot-group-list').on('tap', '.single-chatSnapshot-item', function(e) {
+					var me = window.TimUtil.getCacheNowUserInfo()
+					var groupId = this.getAttribute('groupId')
+					var groupName = this.getAttribute('groupName')
+					var groupFaceimageBig = this.getAttribute('groupFaceimageBig')
+					mui.openWindow({
+						url: '../GroupChatting/groupChatting.html',
+						id: 'groupChatting_' + groupId,
+						show: {autoShow: true, aniShow: 'slide-in-right', duration:200},
+						extras: {
+							groupId,groupName
+						}
+					})
+					window.cacheChatSnapshot.updateReadGroupChatSnapshot(me.id, groupId)
+					refreshGroupChatSnapshot()
+				})
+				mui('#chatSnapshot-group-list').on('tap', '.deleteSingleChatRecordingButton', function(e) {
+					var me = window.TimUtil.getCacheNowUserInfo()
+					var meId = me.id
+					var groupId = this.getAttribute('groupId')
+					window.cacheChatHistory.deleteGroupChatHistory(meId, groupId)
+					window.cacheChatSnapshot.deleteGroupChatSnapshot(meId, groupId)
+					document.getElementById('chatSnapshot-group-list').removeChild(this.parentNode.parentNode)
+				})
+				mui('#chatSnapshot-single-list').on('tap', '.single-chatSnapshot-item', function(e) {
+					var me = window.TimUtil.getCacheNowUserInfo()
+					var sideId = this.getAttribute('sideId')
+					var userNickname = this.getAttribute('userNickname')
+					var userFaceImageCut = this.getAttribute('userFaceImageCut')
+					mui.openWindow({
+						url: '../SingleChatting/singleChatting.html',
+						id: 'singleChatting_' + sideId,
+						show: {autoShow: true, aniShow: 'slide-in-right', duration:200},
+						extras: {
+							userId: sideId,
+							nickname: userNickname,
+							faceImageCut: userFaceImageCut
+						}
+					})
+					window.cacheChatSnapshot.updateReadSingleChatSnapshot(me.id, sideId)
+					refreshSingleChatSnapshot()
+				})
+				mui('#chatSnapshot-single-list').on('tap', '.deleteSingleChatRecordingButton', function(e) {
+					var me = window.TimUtil.getCacheNowUserInfo()
+					var meId = me.id
+					var sideId = this.getAttribute('sideId')
+					window.cacheChatHistory.deleteSingleChatHistory(meId, sideId)
+					window.cacheChatSnapshot.deleteSingleChatSnapshot(meId, sideId)
+					document.getElementById('chatSnapshot-single-list').removeChild(this.parentNode.parentNode)
+				})
+				mui('#request-list').on('tap', '.agree-button', function(e){
+					var me = window.TimUtil.getCacheNowUserInfo()
+					var sendUserId = this.getAttribute('data-id')
+					window.RequestApi.singleRequestAgree({
+						meId: me.id,
+						sendUserId: sendUserId
+					}, function(data) {
+						if (data.code == 200) {
+							window.TimUtil.showToast('已同意对方的请求', 'success')
+							refreshAcceptRequest()
+							mui.fire(contactWebview, window.TimConfig.timSubscribe.refreshContactContactListSubscribe)
+						} else {
+							if (data.code != 200) window.TimUtil.showToast(data.msg, 'error')
+						}
+					})
+				})
+				mui('#request-list').on('tap', '.refuse-button', function(e){
+					var me = window.TimUtil.getCacheNowUserInfo()
+					var sendUserId = this.getAttribute('data-id')
+					window.RequestApi.singleRequestRefuse({
+						meId: me.id,
+						sendUserId: sendUserId
+					}, function(data) {
+						if (data.code == 200) {
+							window.TimUtil.showToast('已拒绝对方的请求', 'success')
+							refreshAcceptRequest()
+						} else {
+							if (data.code != 200) window.TimUtil.showToast(data.msg, 'error')
+						}
+					})
+				})
+				document.getElementById('addFriend').addEventListener('tap', function(){
+					mui.openWindow({
+						url: '../AddFriend/addFriend.html',
+						id: 'addFriend.html',
+						show: {autoShow: true, aniShow: 'slide-in-left', duration:100}
+					})
+				})
+				document.getElementById('saoyisao').addEventListener('tap', function(){
+					mui.openWindow({
+						url: '../Saoyisao/saoyisao.html',
+						id: 'saoyisao.html',
+						show: {autoShow: true, aniShow: 'slide-in-top', duration:100},
+						createNew: true
+					})
+				})
+				window.addEventListener(window.websocketRequestContant.SingleChatSendMsg, function(e) {
+					window.websocketUtil.sendSingleText(e.detail.senderId, e.detail.acceptId, e.detail.content, null)
+					refreshSingleChatSnapshot()
+				})
+				window.addEventListener(window.websocketRequestContant.SingleChatSendImage, function(e) {
+					window.websocketUtil.senderSingleImage(e.detail.senderId, e.detail.acceptId, e.detail.content, null)
+				})
+				window.addEventListener(window.websocketRequestContant.GroupChatSendMsg, function(e){
+					window.websocketUtil.sendGroupText(e.detail.senderId, e.detail.acceptId, e.detail.content, null)
+					refreshGroupChatSnapshot()
+				})
+				window.addEventListener(window.websocketRequestContant.GroupChatSendImage, function(e) {
+					window.websocketUtil.senderGroupImage(e.detail.senderId, e.detail.acceptId, e.detail.content, null)
+				})
+				window.websocketUtil.subscribe(window.websocketResultContant.AcceptSingleChatMsg,function(result, accepetChatContent){				
+					var senderId = accepetChatContent.senderId
+					var acceptId = accepetChatContent.acceptId
+					var content = accepetChatContent.content
+					var contentId = accepetChatContent.contentId
+					var acceptWebview = plus.webview.getWebviewById('singleChatting_' + senderId)
+					var isRead = window.cacheChatSnapshot.chatSnapshotReadType.YesRead
+					if (acceptWebview != null) {
+						mui.fire(acceptWebview, window.websocketResultContant.AcceptSingleChatMsg, {content})
+					} else {
+						isRead = window.cacheChatSnapshot.chatSnapshotReadType.NoRead
+					}
+					window.websocketUtil.signingSingleMsg(contentId, null)
+					window.cacheChatHistory.setSingleChatHistory(acceptId, senderId, content, window.cacheChatHistory.chatHistoryFlagType.contentForSide,
+						window.cacheChatHistory.chatHistoryContentType.textType)
+					window.cacheChatSnapshot.setSingleChatSnapshot(acceptId, senderId, content, isRead)
+					refreshSingleChatSnapshot()
+				})
+				window.websocketUtil.subscribe(window.websocketResultContant.AcceptSingleChatImage,function(result, accepetChatContent){
+					var senderId = accepetChatContent.senderId
+					var acceptId = accepetChatContent.acceptId
+					var content = accepetChatContent.content
+					var contentId = accepetChatContent.contentId
+					var acceptWebview = plus.webview.getWebviewById('singleChatting_' + senderId)
+					var isRead = window.cacheChatSnapshot.chatSnapshotReadType.YesRead
+					if (acceptWebview != null) {
+						mui.fire(acceptWebview, window.websocketResultContant.AcceptSingleChatImage, {content})
+					} else {
+						isRead = window.cacheChatSnapshot.chatSnapshotReadType.NoRead
+					}
+					window.websocketUtil.signingSingleMsg(contentId, null)
+					window.cacheChatHistory.setSingleChatHistory(acceptId, senderId, content, window.cacheChatHistory.chatHistoryFlagType.contentForSide, 
+						window.cacheChatHistory.chatHistoryContentType.imageType)
+					window.cacheChatSnapshot.setSingleChatSnapshot(acceptId, senderId, content, isRead)
+					refreshSingleChatSnapshot()
+				})
+				window.websocketUtil.subscribe(window.websocketResultContant.AcceptGroupChatMsg,function(result, accepetChatContent){
+					var me = window.TimUtil.getCacheNowUserInfo()
+					var sender = JSON.parse(accepetChatContent.senderId)
+					var groupId = accepetChatContent.acceptId
+					var content = accepetChatContent.content
+					var contentId = accepetChatContent.contentId
+					var groupChattingWebview = plus.webview.getWebviewById('groupChatting_' + groupId)
+					var isRead = window.cacheChatSnapshot.chatSnapshotReadType.YesRead
+					if (sender.id != me.id) {
+						window.cacheChatHistory.setGroupChatHistory(me.id, sender, groupId, content, window.cacheChatHistory.chatHistoryFlagType.contentForSide,
+							window.cacheChatHistory.chatHistoryContentType.textType)
+					}
+					if (groupChattingWebview != null && sender.id != me.id) {
+						mui.fire(groupChattingWebview, window.websocketResultContant.AcceptGroupChatMsg, {
+							content,sender
+						})
+					} else {
+						isRead = window.cacheChatSnapshot.chatSnapshotReadType.NoRead
+					}
+					window.websocketUtil.groupSigningMsg(contentId, null)
+					window.cacheChatSnapshot.setGroupChatSnapshot(me.id, groupId, content, isRead)
+					refreshGroupChatSnapshot()
+				})
+				window.websocketUtil.subscribe(window.websocketResultContant.AcceptGroupChatImage,function(result, accepetChatContent){
+					var me = window.TimUtil.getCacheNowUserInfo()
+					var sender = JSON.parse(accepetChatContent.senderId)
+					var groupId = accepetChatContent.acceptId
+					var content = accepetChatContent.content
+					var contentId = accepetChatContent.contentId
+					var groupChattingWebview = plus.webview.getWebviewById('groupChatting_' + groupId)
+					var isRead = window.cacheChatSnapshot.chatSnapshotReadType.YesRead
+					if (sender.id != me.id) {
+						window.cacheChatHistory.setGroupChatHistory(me.id, sender, groupId, content, window.cacheChatHistory.chatHistoryFlagType.contentForSide,
+							window.cacheChatHistory.chatHistoryContentType.imageType)
+					}
+					if (groupChattingWebview != null && sender.id != me.id) {
+						mui.fire(groupChattingWebview, window.websocketResultContant.AcceptGroupChatImage, {
+							content,sender
+						})
+					} else {
+						isRead = window.cacheChatSnapshot.chatSnapshotReadType.NoRead
+					}
+					window.websocketUtil.groupSigningMsg(contentId, null)
+					window.cacheChatSnapshot.setGroupChatSnapshot(me.id, groupId, content, isRead)
+					refreshGroupChatSnapshot()
+				})
+				window.websocketUtil.subscribe(window.websocketResultContant.PullNewContact,function(result, accepetChatContent){
+					mui.fire(contactWebview, window.TimConfig.timSubscribe.refreshContactContactListSubscribe)
+				})
+				window.websocketUtil.subscribe(window.websocketResultContant.PullNewSingleRequest,function(result, accepetChatContent){
+					refreshAcceptRequest()
+				})
+			})
+			
+			function refreshGroupChatSnapshot() {
+				var chatSnapshotListDOM = document.getElementById('chatSnapshot-group-list')
+				var me = window.TimUtil.getCacheNowUserInfo()
+				var groupChatSnapshotList =  window.cacheChatSnapshot.getGroupChatSnapshot(me.id)
+				var togetherHTML = ''
+				for (var i = 0; i < groupChatSnapshotList.length; i++) {
+					var groupChatSnapshotItem = groupChatSnapshotList[i]
+					var groupId = groupChatSnapshotItem.groupId
+					var groupItem = window.cacheGroupList.getGroupItem(groupId)
+					togetherHTML += renderGroupChatSnapshot(groupItem, groupChatSnapshotItem)
+				}
+				chatSnapshotListDOM.innerHTML = togetherHTML
+			}
+			
+			function renderGroupChatSnapshot(groupItem, groupChatSnapshotItem) {
+				var data = {}
+				var groupChatSnapshotTemplate = $('#groupChatSnapshotTemplate').html()
+				data.groupItem = groupItem
+				data.groupChatSnapshotItem = groupChatSnapshotItem
+				data.avatarUrlPrefix = window.TimConfig.serverImageUrl + window.TimConfig.groupAvatarPrefix
+				var template = Handlebars.compile(groupChatSnapshotTemplate)
+				var html = template(data)
+				return html
+			}
+			
+			function getGroupNoReadChatMsg() {
+				var me = window.TimUtil.getCacheNowUserInfo()
+				var groupChatMsgIds = ","
+				window.GroupChatMsgApi.getNoReadChatMsgListApi({
+					acceptUserId: me.id
+				}, function(data){
+					if (data.code == 200) {
+						var noReadGroupChatMsgList = data.result
+						for (var i = 0; i < noReadGroupChatMsgList.length; i++) {
+							var noReadGroupChatMsgItem = noReadGroupChatMsgList[i]
+							window.cacheChatHistory.setGroupChatHistory(me.id, noReadGroupChatMsgItem.sender, 
+								noReadGroupChatMsgItem.groupId, noReadGroupChatMsgItem.content, window.cacheChatHistory.chatHistoryFlagType.contentForSide,
+								noReadGroupChatMsgItem.contentType)
+							window.cacheChatSnapshot.setGroupChatSnapshot(me.id, 
+								noReadGroupChatMsgItem.groupId, noReadGroupChatMsgItem.content, 
+								window.cacheChatSnapshot.chatSnapshotReadType.NoRead
+							)
+							groupChatMsgIds += noReadGroupChatMsgItem.contentId
+							groupChatMsgIds += ","
+						}
+						window.websocketUtil.groupSigningMsg(groupChatMsgIds, null)
+						refreshGroupChatSnapshot()
+					}
+				})
+			}
+			
+			function getSingleNoReadChatMsg() {
+				var me = window.TimUtil.getCacheNowUserInfo()
+				var singleChatMsgIds = ","
+				window.SingleChatMsgApi.getNoReadChatMsgListApi({
+					acceptUserId: me.id
+				}, function(data){
+					if (data.code == 200) {
+						var noReadSingleChatMsgList = data.result
+						for (var i = 0; i < noReadSingleChatMsgList.length; i++) {
+							var noReadSingleChatMsgItem = noReadSingleChatMsgList[i]
+							window.cacheChatHistory.setSingleChatHistory(noReadSingleChatMsgItem.acceptUserId, 
+								noReadSingleChatMsgItem.sendUserId, noReadSingleChatMsgItem.content, 
+								window.cacheChatHistory.chatHistoryFlagType.contentForSide,
+								noReadSingleChatMsgItem.contentType
+							)
+							window.cacheChatSnapshot.setSingleChatSnapshot(noReadSingleChatMsgItem.acceptUserId, 
+								noReadSingleChatMsgItem.sendUserId, noReadSingleChatMsgItem.content, 
+								window.cacheChatSnapshot.chatSnapshotReadType.NoRead
+							)
+							singleChatMsgIds += noReadSingleChatMsgItem.id
+							singleChatMsgIds += ","
+						}
+						window.websocketUtil.signingSingleMsg(singleChatMsgIds, null)
+						refreshSingleChatSnapshot()
+					}
+				})
+			}
+			
+			function refreshSingleChatSnapshot() {
+				var chatSnapshotListDOM = document.getElementById('chatSnapshot-single-list')
+				var me = window.TimUtil.getCacheNowUserInfo()
+				var singleChatSnapshotList =  window.cacheChatSnapshot.getSingleChatSnapshot(me.id)
+				var togetherHTML = ''
+				for (var i = 0; i < singleChatSnapshotList.length; i++) {
+					var singleChatSnapshotItem = singleChatSnapshotList[i]
+					var sideId = singleChatSnapshotItem.sideId
+					var userItem = window.cacheContact.getSingleContactItem(sideId)
+					togetherHTML += renderSingleChatSnapshot(userItem, singleChatSnapshotItem)
+				}
+				chatSnapshotListDOM.innerHTML = togetherHTML
+			}
+			
+			function renderSingleChatSnapshot(userItem, singleChatSnapshotItem) {
+				var data = {}
+				var singleChatSnapshotTemplate = $('#singleChatSnapshotTemplate').html()
+				data.userItem = userItem
+				data.singleChatSnapshotItem = singleChatSnapshotItem
+				data.avatarUrlPrefix = window.TimConfig.serverImageUrl + window.TimConfig.avatarPrefix
+				var template = Handlebars.compile(singleChatSnapshotTemplate)
+				var html = template(data)
+				return html
+			}
+			
+			function refreshAcceptRequest() {
+				$('#request-list').empty()
+				var me = window.TimUtil.getCacheNowUserInfo()
+				window.RequestApi.singleRequestAcceptApi({
+					userId: me.id
+				}, function(data){
+					if (data.code == 200) {
+						if (data.result.length > 0) {
+							renderSingleRequestAcceptHTML(data.result)
+						}
+					} else {
+						window.TimUtil.showToast(data.msg, 'error')
+					}
+				})
+			}
+			function renderSingleRequestAcceptHTML(result) {
+				var data = {}
+				data.result = result
+				data.avatarUrlPrefix = window.TimConfig.serverImageUrl + window.TimConfig.avatarPrefix
+				var singleRequestTemplate = $('#singleRequestTemplate').html()
+				var template = Handlebars.compile(singleRequestTemplate)
+				var html = template(data)
+				$('#request-list').html(html)	
+			}
+		</script>
+		<script type="text/template" id="singleRequestTemplate">
+			{{#each result}}
+			    <div class="single-request-item" data-id="{{userId}}">
+					<div class="item-avatar">
+						<img src="{{../avatarUrlPrefix}}{{faceImageCut}}" alt="" />
+					</div>
+					<div class="item-info">
+						<div class="item-info-nickname">{{nickname}}</div>
+						<div class="item-info-desc">请求添加你为好友</div>
+					</div>
+					<div class="item-button-group">
+						<button class="agree-button" data-id="{{userId}}">同意</button>
+						<button class="refuse-button" data-id="{{userId}}">拒绝</button>
+					</div>
+				</div>
+			{{/each}}
+		</script>
+		<script type="text/template" id="singleChatSnapshotTemplate">
+		    <div class="single-chatSnapshot-item" sideId="{{userItem.userId}}" userNickname="{{userItem.nickname}}" 
+		    		userFaceImageCut="{{userItem.faceImageCut}}">
+		    	<div class="item-body mui-slider-handle">
+		    		<div class="item-avatar">
+						<img src="{{avatarUrlPrefix}}{{userItem.faceImageCut}}" alt="" />
+					</div>
+					<div class="item-info mui-slider-handle">
+						<div class="item-info-nickname">{{userItem.nickname}}</div>
+						<div class="item-info-content">{{singleChatSnapshotItem.content}}</div>
+					</div>
+					{{#unless  singleChatSnapshotItem.isRead}}
+						<span class="mui-badge mui-badge-red">..</span>
+					{{/unless }}
+		    	</div>
+			</div>
+		</script>
+		<script type="text/template" id="groupChatSnapshotTemplate">
+		    <div class="single-chatSnapshot-item" groupId="{{groupItem.id}}" groupName="{{groupItem.groupName}}" 
+		    		groupFaceimageBig="{{groupItem.groupFaceimageBig}}">
+		    	<div class="item-body mui-slider-handle">
+		    		<div class="item-avatar">
+						<img src="{{avatarUrlPrefix}}{{groupItem.groupFaceimageBig}}" alt="" />
+					</div>
+					<div class="item-info mui-slider-handle">
+						<div class="item-info-nickname">{{groupItem.groupName}}(群)</div>
+						<div class="item-info-content">{{groupChatSnapshotItem.content}}</div>
+					</div>
+					{{#unless  groupChatSnapshotItem.isRead}}
+						<span class="mui-badge mui-badge-red">..</span>
+					{{/unless }}
+		    	</div>
+			</div>
+		</script>
+	</body>
+
+</html>

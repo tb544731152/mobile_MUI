@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <!-- 头部 底部选项卡 阿里图标-->
+    <link rel="stylesheet" type="text/css" href="css/index.css"/>
+    <link rel="stylesheet" type="text/css" href="download/font_icon/iconfont.css"/>
+    <link rel="stylesheet" type="text/css" href="common/css/header.css"/>
+     <script src="download/jQuery/jquery-3.3.1.min.js"></script>
+    <script src="config/TimConfig.js"></script>
+    <script src="common/js/TimUtil.js"></script>
+</head>
+<body>
+	<!-- 底部选项卡 tabindex用于显示区分 -->
+	<!-- <nav class="mui-bar mui-bar-tab">
+	    <a class="mui-tab-item mui-active" tabindex="0">
+	        <span class="mui-icon iconfont icon-news"></span>
+	    </a>
+	    <a class="mui-tab-item" tabindex="1">
+	        <span class="mui-icon iconfont icon-group"></span>
+	    </a>
+	    <a class="mui-tab-item" tabindex="2">
+	        <span class="mui-icon iconfont icon-tongxunlu"></span>
+	    </a>
+	    <a class="mui-tab-item" tabindex="3">
+	        <span class="mui-icon iconfont icon-gongwenbao"></span>
+	    </a>
+	</nav> -->
+	<nav class="mui-bar mui-bar-tab">
+	    <a class="mui-tab-item mui-active tab-chatlist" tabindex="0">
+	        <span>村聊</span>
+	    </a>
+	    <a class="mui-tab-item tab-maillist" tabindex="1">
+	        <span>通讯录</span>
+	    </a>
+	    <a class="mui-tab-item tab-mine" tabindex="2">
+	        <span>我的</span>
+	    </a>
+	</nav>
+	<script type="text/javascript" charset="utf-8">
+		mui.init();
+		mui.back = function() {return false}
+		mui.plusReady(function(){
+			/**
+			 * 获取当前webView
+			 * 向当前webview追加子页的4张webview对象
+			 * 隐藏webview只显示首个wenview
+			 * 限制高度防止webview全屏
+			 * 批量绑定tap事件,依靠tabindex映射数组展示不同页面
+			 * ! 禁用返回按钮
+			 * ! 网络连接监听
+			 */
+			window.TimUtil.setSystemStatusColor()
+			netChangeSwitch()
+			var indexWebview = plus.webview.currentWebview()
+			var timFooterBarArray = window.TimConfig.timFooterBarArray
+			var timStyle = window.TimConfig.timStyle
+			var indexWebView = plus.webview.currentWebview()
+			for (var i = 0; i < timFooterBarArray.length; i++) {
+				var pageBar = plus.webview.create(timFooterBarArray[i].pageUrl, timFooterBarArray[i].pageId, timStyle)
+				pageBar.hide()
+				indexWebview.append(pageBar)
+			}
+			plus.webview.show(timFooterBarArray[0].pageId)
+			mui('.mui-bar-tab').on('tap', 'a', function(){
+				mui.each(function(index, item){
+					plus.webview.hide(timFooterBarArray[index].pageId, 'none', 0)
+				})
+				var tabIndex = this.getAttribute('tabindex')
+				plus.webview.show(timFooterBarArray[tabIndex].pageId, 'none', 0)
+			})
+		})
+		
+		function netChangeSwitch() {
+			var connectionStatus = plus.networkinfo.getCurrentType()
+			if (connectionStatus != 0 && connectionStatus != 1) {
+				
+			} else {
+				window.TimUtil.showToast('当前网络状态不可用', 'error')
+			}
+			document.addEventListener('netchange', function(e){
+				var connectionStatus = plus.networkinfo.getCurrentType()
+				if (connectionStatus != 0 && connectionStatus != 1) {
+					
+				} else {
+					window.TimUtil.showToast('当前网络状态不可用', 'error')
+				}
+			})
+		}
+	</script>
+</body>
+</html>

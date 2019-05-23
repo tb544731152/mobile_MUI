@@ -1,0 +1,146 @@
+/* 登录容器 */
+.login-wrap {
+	width: 100%;
+	height: 100%;
+	
+}
+
+.login-content {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+/* 头像 */
+.login-logo {
+	max-width: 100%;
+	max-height: 100%;
+	margin-top: 76px;
+	margin-left: 60px;
+}
+
+
+.login-logo .logo {
+	width: 128px;
+	height: 128px;
+}
+
+/* 登录表单 */
+.login-form {
+	max-width: 100%;
+	width: 100%;
+	flex: 1;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+}
+/* 组件组 */
+.login-form .login-group {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+	margin-top: 20px;
+}
+.login-form .login-group .login-control {
+	width: 80%;
+	height: 50px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	border-bottom: 1px solid #ccc;
+}
+
+.login-control input{
+	background:none;  
+	outline:none;  
+	border:0px;
+	margin-bottom: 0;
+	color: #AAAAC3;
+	/* color: red; */
+	font-size: 15px;
+}
+
+.box-button{
+	width: 80%;
+	height: 50px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin-bottom: 10px;
+}
+.other{
+	color: #ccc;
+	font-size: 14px;
+}
+.login-phone{
+	width: 20px;
+	height: 20px;
+}
+.closeit{
+	position: absolute;
+	right: 12%;
+	height: 50px;
+	line-height: 50px;
+	color: #ccc;
+	display: flex;
+	align-items: center;
+	background-color: transparent;
+}
+.closeit .message{
+	display: inline-block;
+	margin-left: 8px;
+	font-size: 12px;
+	padding: 4px 10px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	color: #ccc;
+}
+/* 组件样式 */
+.input-button {
+	color: #fff;
+	width: 100%;
+	height: 44px;
+	border-radius: 8px;
+	font-size: 20px;
+	background-color: #6C87FC;
+	text-align: center;
+}
+.login-input {
+	margin-bottom: 0 !important;
+	display: block !important;
+	width: 100% !important;
+	color: #000 !important;
+	outline: 0 !important;
+	font-size: 1.6rem !important;
+	line-height: 28px !important; 
+	border: 0 !important;
+	padding: 8px 12px !important;
+	height: 42px !important;
+	border-radius: 3px !important;
+	box-shadow: none !important;
+	background: transparent !important;
+}
+.login-input::-webkit-input-placeholder {
+	color: #000;
+    font-size: 16px;
+    font-weight: 400;
+    opacity: .4;
+    line-height: 25px;
+}
+/* 注册 与 忘记密码*/
+.login-profile {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+}
+.login-profile .profile-content{
+	display: flex;
+	width: 80%;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	color: #007AFF;
+}

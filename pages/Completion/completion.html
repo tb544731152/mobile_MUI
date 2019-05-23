@@ -1,0 +1,225 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<script src="../../js/mui.min.js"></script> 
+		<link rel="stylesheet" type="text/css" href="completion.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css" />
+		<script src="../../common/js/CheckFormUtil.js"></script> 
+		<script src="../../config/TimConfig.js"></script> 
+		<script src="../../api/Login/login.js"></script> 
+		<script src="../../common/js/TimUtil.js"></script>
+		<script src="../../config/HttpConstantCode.js"></script> 
+	</head>
+	<body>
+		<div class="userinfo_wrap">
+			<div class="wrap_title">
+				<img src="../../image/ico/back.png" >
+				<div class="user_title">完善个人信息</div>
+				<div id="skip" class="user_get">跳过</div>
+			</div>
+			<div class="wrap_top">
+				请完善您的个人信息，以便于您后续的使用
+			</div>
+			<div class="wrap_bottom">
+				<div class="user_info">
+					<img src="../../image/ico/user.png" >
+					<input type="text" id='username' placeholder="请输入真实姓名" />
+				</div>
+				<div class="user_info" id="gender">
+					<img src="../../image/ico/sex.png" >
+					<input type="text" id='genderInput' readonly="true"  placeholder="请选择性别" />
+					<img class="toright"  src="../../image/ico/next.png" >
+				</div>
+				<div class="user_info" id="showCityPicker3">
+					<img src="../../image/ico/address.png" >
+					<input type="text" id='cityResult3' readonly="true" placeholder="请选择您的地址" />
+					<input type="hidden" id='hidden_cityResult3' readonly="true">
+					<img  class="toright" src="../../image/ico/next.png" >
+				</div>
+				<div class="user_info" id="showCityPicker">
+					<img src="../../image/ico/input.png" >
+					<input  id='cityResult' type="text" readonly="true"  placeholder="请输入您的乡镇（村）名称" />
+					<input  id='hidden_cityResult' type="hidden"  placeholder="请输入您的乡镇（村）名称" />
+					<img class="toright"  src="../../image/ico/next.png" >
+				</div>
+				<div id="sure_btn" class="user_button_grey">
+					确认
+				</div>
+			</div>
+		</div>
+		<div id="sheet-gender" class="mui-popover mui-popover-bottom mui-popover-action ">
+		    <!-- 可选择菜单 -->
+		    <ul class="mui-table-view">
+		      <li class="mui-table-view-cell">
+		        <a id="man" href="#">男</a>
+		      </li>
+		      <li class="mui-table-view-cell">
+		        <a id="women" href="#">女</a>
+		      </li>
+		    </ul>
+		    <!-- 取消菜单 -->
+		    <ul class="mui-table-view">
+		      <li class="mui-table-view-cell">
+		        <a href="#sheet-gender"><b>取消</b></a>
+		      </li>
+		    </ul>
+		</div>
+		<script src="../../js/mui.picker.min.js"></script>
+		<script src="../../js/city.data-3.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init()
+			mui.back = function() {return false}
+			mui.plusReady(function(){
+				var meWebview = plus.webview.getWebviewById('me.html')
+				var contactWebview = plus.webview.getWebviewById('contact.html')
+				var sure_btnDOM = document.getElementById("sure_btn");
+				var usernameDOM = document.getElementById("username");
+				// 绑定选择菜单
+				var genderDOM = document.getElementById("gender");
+				genderDOM.addEventListener("tap", function() {
+					mui("#sheet-gender").popover("toggle");
+				});
+				var genderInputDOM = document.getElementById("genderInput");
+				//绑定男
+				var manDOM = document.getElementById("man");
+				manDOM.addEventListener("tap", function() {
+					genderInputDOM.value = '男';
+					mui("#sheet-gender").popover("toggle");
+				});
+				//绑定男
+				var womenDOM = document.getElementById("women");
+				womenDOM.addEventListener("tap", function() {
+					genderInputDOM.value = '女';
+					mui("#sheet-gender").popover("toggle");
+				});
+				
+				var _getParam = function(obj, param) {
+							return obj[param] || '';
+				};
+				var cityPicker3 = new mui.PopPicker({
+							layer: 3
+				});
+				cityPicker3.setData(cityData3);
+				var showCityPickerButton = document.getElementById('showCityPicker3');
+				var cityResult3 = document.getElementById('cityResult3');
+				var hidden_cityResult3 = document.getElementById('hidden_cityResult3');
+				var city_code = '';
+				showCityPickerButton.addEventListener('tap', function(event) {
+				cityPicker3.show(function(items) {
+							
+						hidden_cityResult3.value = 	_getParam(items[0], 'value') + "|" + _getParam(items[1], 'value') + "|" + _getParam(items[2], 'value');
+						city_code = _getParam(items[2], 'value');
+						cityResult3.value =  _getParam(items[0], 'text') + "," + _getParam(items[1], 'text') + "," + _getParam(items[2], 'text');
+						
+				});
+				}, false);
+				
+				//级联示例
+				var showCityPickerButton = document.getElementById('showCityPicker');
+				var cityResult = document.getElementById('cityResult');
+				var hidden_cityResult = document.getElementById('hidden_cityResult');
+				showCityPickerButton.addEventListener('tap', function(event) {
+					var get_city_url = 'http://192.168.1.115:8080/city/getData?cityCode='+city_code;
+					console.log(get_city_url)
+					mui.ajax(get_city_url,{
+								data:{
+								},
+								dataType:'json',//服务器返回json格式数据
+								type:'post',//HTTP请求类型
+								timeout:10000,//超时时间设置为10秒；
+								headers:{'Content-Type':'application/json'},	              
+								success:function(data){
+									var cityPicker = new mui.PopPicker({
+										layer: 2
+									});
+									
+									cityPicker.setData(data.data);
+									cityPicker.show(function(items) {
+										cityResult.value = items[0].text + "," + items[1].text;
+										hidden_cityResult.value = items[0].value + "|" + items[1].value;
+									});
+									//按钮颜色变亮
+									sure_btnDOM.setAttribute("class", "user_button_ok")
+								}
+					});
+					}, 
+				false);
+				
+				document.getElementById("skip").addEventListener('tap', function() {
+					var btnArray = ['取消', '确认'];
+					mui.confirm('信息不完善无法为您创建群聊，跳过？', '提醒', btnArray, function(e) {
+						if (e.index == 1) {
+							mui.fire(meWebview, window.TimConfig.timSubscribe.refreshUserInfoSubscribe)
+							mui.fire(contactWebview, window.TimConfig.timSubscribe.refreshContactContactListSubscribe)
+							mui.openWindow({
+								url: '../../index.html',
+								id: 'index.html',
+								show: {autoShow: true,aniShow:'none',duration: 0}
+							})
+						} else {
+							console.log("不跳过")
+						}
+					})
+				});
+				
+				sure_btnDOM.addEventListener('tap', function() {
+					var username=usernameDOM.value;
+					if(username==''){
+						window.TimUtil.showToast("姓名不能为空", 'error');
+						return;
+					}
+					var gender=genderInputDOM.value;
+					if(gender==''){
+						window.TimUtil.showToast("性别必填", 'error');
+						return;
+					}
+					
+					var proviceVal=hidden_cityResult3.value;
+					if(proviceVal==''){
+						window.TimUtil.showToast("省市区不能为空", 'error');
+						return;
+					}
+					
+					var cityVal=hidden_cityResult.value;
+					if(cityVal==''){
+						window.TimUtil.showToast("乡镇不能为空", 'error');
+						return;
+					}
+					var address = cityResult3.value+','+cityResult.value
+					var cacheUser = window.TimUtil.getCacheNowUserInfo();
+					var addresscode = proviceVal+'|'+cityVal;
+					var phone =  cacheUser.phone;
+					console.log(phone)
+					var cid = plus.push.getClientInfo().clientid;
+					window.LoginApi.complateUserInfo({
+						phone,cid,username,gender,addresscode,address
+					}, function(data){
+						console.log(JSON.stringify(data))
+						if (data.code == HttpConstantCode.successCode) {
+								var user = data.result
+								console.log(JSON.stringify(user))
+								window.TimUtil.removeCacheNowUserInfo()
+								window.TimUtil.setCacheNowUserInfo(user)
+								mui.fire(meWebview, window.TimConfig.timSubscribe.refreshUserInfoSubscribe)
+								mui.fire(contactWebview, window.TimConfig.timSubscribe.refreshContactContactListSubscribe)
+								mui.openWindow({
+									url: '../../index.html',
+									id: 'index.html',
+									show: {autoShow: true,aniShow:'none',duration: 0}
+								})
+								window.TimUtil.showToast('登陆成功', 'success')
+						} else {
+							window.TimUtil.showToast(data.msg, 'error')
+						}
+					})
+				});
+				
+			}) 
+		</script>
+	</body>
+</html>
