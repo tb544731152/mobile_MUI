@@ -1,0 +1,90 @@
+div, ul, li, p, span{
+	padding: 0;
+	margin: 0;
+}
+ul, li{
+	list-style: none;
+}
+button{
+	outline: none;
+	border: none;
+	background-color: transparent;
+}
+.mine-wallet{
+	width: 100%;
+	min-height: 100vh;
+	font-size: 1rem;
+	color: #2A2E2F;
+	font-weight: normal;
+	background-color: #FFFFFF;
+}
+.mine-wallet .mine-wallet-top{
+	width: 100%;
+	height: 15rem;
+	background: url('../../image/mineWallet/topbg.png') no-repeat left top;
+	background-size: 100%;
+}
+.mine-wallet .mine-wallet-top .mine-wallet-top-num{
+	padding: 5.16rem 0 1.6rem 1.2rem;
+	font-size: 3rem;
+	color: #FFFFFF;
+	font-weight: bold;
+}
+.mine-wallet .mine-wallet-top .mine-wallet-top-num .mine-wallet-top-num-unit{
+	font-size: 1.2rem;
+}
+.mine-wallet .mine-wallet-top .mine-wallet-top-btn{
+	margin: 0 0 0 1.2rem;
+}
+.mine-wallet .mine-wallet-top .mine-wallet-top-btn button{
+	font-size: 1rem;
+	font-weight: normal;
+	color: #FFFFFF;
+	padding: 0.22rem 1.04rem 0.22rem 1.64rem;
+	border-radius: 1.16rem;
+	background-color: rgba(255,255,255,0.29);
+}
+.mine-wallet .mine-wallet-top .mine-wallet-top-btn button .mine-wallet-top-btn-more{
+	display: inline-block;
+	width: 0.82rem;
+	height: 0.82rem;
+	margin: 0.3rem 0 0 0.28rem;
+	background: url('../../image/mineWallet/moreArrow.png') no-repeat left top;
+	background-size: 100% 100%;
+}
+.mine-wallet .mine-wallet-list{
+	background-color: #FFFFFF;
+	border-radius: 0.44rem 0.44rem 0 0;
+	position: relative;
+	top: -3.6rem;
+}
+.mine-wallet .mine-wallet-list .mine-wallet-list-title{
+	margin: 0 1.2rem;
+	padding: 1.3rem 0 0.4rem;
+	border-bottom: 1px solid #E2E2EF;
+}
+.mine-wallet .mine-wallet-list .mine-wallet-list-content{
+
+}
+.mine-wallet .mine-wallet-list .mine-wallet-list-content ul li{
+	margin: 0 1.2rem;
+	padding: 1.3rem 0 0.4rem;
+	border-bottom: 1px solid #E2E2EF;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.mine-wallet .mine-wallet-list .mine-wallet-list-content ul li .mine-wallet-list-content-text p{
+	font-size: 0.8rem;
+	color: #2A2E2F;
+	font-weight: normal;
+}
+.mine-wallet .mine-wallet-list .mine-wallet-list-content ul li .mine-wallet-list-content-text p:first-of-type{
+	margin: 0 0 0.34rem;
+}
+.mine-wallet .mine-wallet-list .mine-wallet-list-content ul li .mine-wallet-list-content-money{
+
+}
+.mine-wallet .mine-wallet-list .mine-wallet-list-content ul li .mine-wallet-list-content-money-reduce{
+	color: #999999;
+}

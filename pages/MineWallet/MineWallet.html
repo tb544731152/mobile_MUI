@@ -1,0 +1,143 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="MineWallet.css"/>
+		<link rel="stylesheet" type="text/css" href="../../common/css/header.css"/>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../config/TimConfig.js"></script>
+		<script src="../../common/js/TimUtil.js"></script>
+	</head>
+
+	<body>
+		<div class="mine-wallet">
+			<div class="mine-wallet-top">
+				<div class="mine-wallet-top-num">
+					<span class="mine-wallet-top-num-unit">￥</span>224.00
+				</div>
+				<div class="mine-wallet-top-btn">
+					<button>充值<span class="mine-wallet-top-btn-more"></span></button>
+				</div>
+			</div>
+			<div class="mine-wallet-list">
+				<div class="mine-wallet-list-title">交易记录</div>
+				<div class="mine-wallet-list-content">
+					<ul>
+						<li>
+							<div class="mine-wallet-list-content-text">
+								<p>充值服务</p>
+								<p>2019年3月21日</p>
+							</div>
+							<div class="mine-wallet-list-content-money">+200</div>
+						</li>
+						<li>
+							<div class="mine-wallet-list-content-text">
+								<p>充值服务</p>
+								<p>2019年3月22日</p>
+							</div>
+							<div class="mine-wallet-list-content-money mine-wallet-list-content-money-reduce">-200</div>
+						</li>
+						<li>
+							<div class="mine-wallet-list-content-text">
+								<p>充值服务</p>
+								<p>2019年3月23日</p>
+							</div>
+							<div class="mine-wallet-list-content-money">+200</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			/**
+			 * 当当前webview被渲染时加载用户信息
+			 * 点击头像跳转头像页面
+			 * 点击二维码跳转二维码页面
+			 * 注销时删除所有缓存
+			 * ! 点击昵称签名跳转信息编辑页面 1: 昵称, 2: 签名
+			 * ! 添加修改头像后更新信息的事件
+			 */
+			mui.init()
+			mui.plusReady(function(e){
+				window.TimUtil.setSystemStatusColor()
+				refreshUserInfo()	
+				var meWebview = plus.webview.currentWebview()
+				meWebview.addEventListener('show', function() {
+					refreshUserInfo()				
+				})
+				document.getElementById('logout-btn').addEventListener('tap', function(e){
+					mui.confirm('确认退出登录?', '退出登录', ['否', '是'], function(data){
+						if (data.index == 1) {
+							window.TimUtil.removeCacheNowUserInfo()
+							mui.openWindow({
+								url: '../Login/login.html',
+								id: 'login.html',
+								show: {autoShow: true, aniShow: 'none', duration: 0}
+							})
+						} 
+					})
+				})
+				document.getElementById('me-info-faceImage-link').addEventListener('tap', function(e){
+					mui.openWindow({
+						url: '../OperateAvatar/operateAvatar.html',
+						id: 'operateAvatar.html'
+					})
+				})
+				document.getElementById('me-info-nickname-bottom').addEventListener('tap', function(e){
+					mui.openWindow({
+						url: '../EditMeInfo/editMeInfo.html',
+						id: 'editMeInfo.html',
+						extras: {
+							beforeValue: document.getElementById('me-info-nickname-bottom').innerText,
+							headTitle: '编辑昵称',
+							editType: 1
+						}
+					})
+				})
+				document.getElementById('me-info-description').addEventListener('tap', function(e){
+					mui.openWindow({
+						url: '../EditMeInfo/editMeInfo.html',
+						id: 'editMeInfo.html',
+						extras: {
+							beforeValue: document.getElementById('me-info-description').innerText,
+							headTitle: '编辑签名',
+							editType: 2
+						}
+					})
+				})
+				document.getElementById('openQrCode').addEventListener('tap', function(e){
+					mui.openWindow({
+						url: '../MeQrCode/meQrCode.html',
+						id: 'meQrCode.html',
+						show: {autoShow: true, aniShow: 'slide-in-right', duration:200},
+					})
+				})
+				window.addEventListener(window.TimConfig.timSubscribe.refreshUserInfoSubscribe, function() {
+					refreshUserInfo()
+				})
+			}) 
+			function refreshUserInfo() {
+				var user = TimUtil.getCacheNowUserInfo()
+				if (user != null) {
+					var faceImageCut = user.faceImageCut
+					var nickname = user.nickname
+					var qqNumber = user.qqNumber
+					var description = user.description
+					var telephone = user.telephone
+					document.getElementById('me-info-qqNumber-top').innerText = qqNumber
+					document.getElementById('me-info-qqNumber-bottom').innerText = qqNumber
+					document.getElementById('me-info-description').innerText = description == ''?'没有签名':description
+					document.getElementById('me-info-nickname-top').innerText = nickname
+					document.getElementById('me-info-nickname-bottom').innerText = nickname
+					document.getElementById('me-info-telephone').innerText = telephone
+					document.getElementById('me-info-faceImage').src = 
+						window.TimConfig.serverImageUrl + window.TimConfig.avatarPrefix + faceImageCut
+				}
+			}
+		</script>
+	</body>
+</html>
