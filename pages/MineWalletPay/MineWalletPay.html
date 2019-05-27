@@ -1,0 +1,231 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="MineWalletPay.css"/>
+		<link rel="stylesheet" type="text/css" href="../../common/css/header.css"/>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../config/TimConfig.js"></script>
+		<script src="../../common/js/TimUtil.js"></script>
+	</head>
+
+	<body>
+		<div class="mine-wallet-pay">
+			<div class="mine-wallet-pay-title">选择充值金额</div>
+			<div class="mine-wallet-pay-list">
+				<ul>
+					<li>
+						<span>30元</span>
+						<span class="mine-wallet-pay-list-selected"></span>
+					</li>
+					<li>
+						<span>50元</span>
+						<span class="mine-wallet-pay-list-select"></span>
+					</li>
+					<li>
+						<span>100元</span>
+						<span class="mine-wallet-pay-list-select"></span>
+					</li>
+					<li>
+						<span>200元</span>
+						<span class="mine-wallet-pay-list-select"></span>
+					</li>
+					<li>
+						<span>500元</span>
+						<span class="mine-wallet-pay-list-select"></span>
+					</li>
+					<li>
+						<span>1000元</span>
+						<span class="mine-wallet-pay-list-select"></span>
+					</li>
+				</ul>
+			</div>
+			<div class="mine-wallet-pay-diy">自定义数额</div>
+			<!-- 自定义数额 -->
+			<div class="pay-diy">
+				<div class="pay-diy-input"><span>￥</span> 输入金额（需输入整数）</div>
+				<div class="pay-diy-keyboard">
+					<div class="pay-diy-keyboard-num">
+						<ul>
+							<li>1</li>
+							<li>2</li>
+							<li>3</li>
+							<li>4</li>
+							<li>5</li>
+							<li>6</li>
+							<li>7</li>
+							<li>8</li>
+							<li>9</li>
+							<li>.</li>
+							<li>0</li>
+							<li class="pay-diy-keyboard-num-keyboard"></li>
+						</ul>
+					</div>
+					<div class="pay-diy-keyboard-btn">
+						<ul>
+							<li class="pay-diy-keyboard-btn-delete"></li>
+							<li class="pay-diy-keyboard-btn-sure">确定</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- 底部按钮 -->
+			<div class="mine-wallet-pay-bottom">
+				<div class="mine-wallet-pay-bottom-money">实付：￥30.00</div>
+				<button class="mine-wallet-pay-bottom-btn">去支付</button>
+			</div>
+			<!-- 支付宝收银台 -->
+			<div class="pay-cashier-zfb">
+				<div class="pay-mask"></div>
+				<div class="pay-cashier-zfb-main">
+					<div class="pay-cashier-zfb-title">收银台</div>
+					<div class="pay-cashier-zfb-content">
+						<div class="pay-cashier-zfb-content-money">￥30.00</div>
+						<div class="pay-cashier-zfb-content-type">
+							<span class="pay-cashier-zfb-content-type-logo"></span>
+							<span class="pay-cashier-zfb-content-type-name">支付宝</span>
+							<span class="pay-cashier-zfb-content-type-more"></span>
+						</div>
+						<div class="pay-cashier-zfb-content-btn">
+							<button>立即支付</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 微信收银台 -->
+			<div class="pay-cashier-wx">
+				<div class="pay-mask"></div>
+				<div class="pay-cashier-wx-main">
+					<div class="pay-cashier-wx-title">收银台</div>
+					<div class="pay-cashier-wx-content">
+						<div class="pay-cashier-wx-content-money">￥30.00</div>
+						<div class="pay-cashier-wx-content-type">
+							<span class="pay-cashier-wx-content-type-logo"></span>
+							<span class="pay-cashier-wx-content-type-name">微信</span>
+							<span class="pay-cashier-wx-content-type-more"></span>
+						</div>
+						<div class="pay-cashier-wx-content-btn">
+							<button>立即支付</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 选择支付方式 -->
+			<div class="pay-type">
+				<div class="pay-mask"></div>
+				<div class="pay-type-main">
+					<div class="pay-type-title">选择支付方式</div>
+					<div class="pay-type-content">
+						<ul>
+							<li>
+								<div class="pay-cashier-zfb-content-type">
+									<span class="pay-cashier-zfb-content-type-logo"></span>
+									<span class="pay-cashier-zfb-content-type-name">支付宝</span>
+									<span class="pay-cashier-zfb-content-type-more"></span>
+								</div>
+							</li>
+							<li>
+								<div class="pay-cashier-wx-content-type">
+									<span class="pay-cashier-wx-content-type-logo"></span>
+									<span class="pay-cashier-wx-content-type-name">微信</span>
+									<span class="pay-cashier-wx-content-type-more"></span>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			/**
+			 * 当当前webview被渲染时加载用户信息
+			 * 点击头像跳转头像页面
+			 * 点击二维码跳转二维码页面
+			 * 注销时删除所有缓存
+			 * ! 点击昵称签名跳转信息编辑页面 1: 昵称, 2: 签名
+			 * ! 添加修改头像后更新信息的事件
+			 */
+			mui.init()
+			mui.plusReady(function(e){
+				window.TimUtil.setSystemStatusColor()
+				refreshUserInfo()	
+				var meWebview = plus.webview.currentWebview()
+				meWebview.addEventListener('show', function() {
+					refreshUserInfo()				
+				})
+				document.getElementById('logout-btn').addEventListener('tap', function(e){
+					mui.confirm('确认退出登录?', '退出登录', ['否', '是'], function(data){
+						if (data.index == 1) {
+							window.TimUtil.removeCacheNowUserInfo()
+							mui.openWindow({
+								url: '../Login/login.html',
+								id: 'login.html',
+								show: {autoShow: true, aniShow: 'none', duration: 0}
+							})
+						} 
+					})
+				})
+				document.getElementById('me-info-faceImage-link').addEventListener('tap', function(e){
+					mui.openWindow({
+						url: '../OperateAvatar/operateAvatar.html',
+						id: 'operateAvatar.html'
+					})
+				})
+				document.getElementById('me-info-nickname-bottom').addEventListener('tap', function(e){
+					mui.openWindow({
+						url: '../EditMeInfo/editMeInfo.html',
+						id: 'editMeInfo.html',
+						extras: {
+							beforeValue: document.getElementById('me-info-nickname-bottom').innerText,
+							headTitle: '编辑昵称',
+							editType: 1
+						}
+					})
+				})
+				document.getElementById('me-info-description').addEventListener('tap', function(e){
+					mui.openWindow({
+						url: '../EditMeInfo/editMeInfo.html',
+						id: 'editMeInfo.html',
+						extras: {
+							beforeValue: document.getElementById('me-info-description').innerText,
+							headTitle: '编辑签名',
+							editType: 2
+						}
+					})
+				})
+				document.getElementById('openQrCode').addEventListener('tap', function(e){
+					mui.openWindow({
+						url: '../MeQrCode/meQrCode.html',
+						id: 'meQrCode.html',
+						show: {autoShow: true, aniShow: 'slide-in-right', duration:200},
+					})
+				})
+				window.addEventListener(window.TimConfig.timSubscribe.refreshUserInfoSubscribe, function() {
+					refreshUserInfo()
+				})
+			}) 
+			function refreshUserInfo() {
+				var user = TimUtil.getCacheNowUserInfo()
+				if (user != null) {
+					var faceImageCut = user.faceImageCut
+					var nickname = user.nickname
+					var qqNumber = user.qqNumber
+					var description = user.description
+					var telephone = user.telephone
+					document.getElementById('me-info-qqNumber-top').innerText = qqNumber
+					document.getElementById('me-info-qqNumber-bottom').innerText = qqNumber
+					document.getElementById('me-info-description').innerText = description == ''?'没有签名':description
+					document.getElementById('me-info-nickname-top').innerText = nickname
+					document.getElementById('me-info-nickname-bottom').innerText = nickname
+					document.getElementById('me-info-telephone').innerText = telephone
+					document.getElementById('me-info-faceImage').src = 
+						window.TimConfig.serverImageUrl + window.TimConfig.avatarPrefix + faceImageCut
+				}
+			}
+		</script>
+	</body>
+</html>

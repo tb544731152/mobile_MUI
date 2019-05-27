@@ -1,0 +1,401 @@
+div, ul, li, p, span, button{
+	padding: 0;
+	margin: 0;
+}
+ul, li{
+	list-style: none;
+}
+button{
+	outline: none;
+	border: none;
+	background-color: transparent;
+}
+.mine-wallet-pay{
+	font-size: 1rem;
+	color: #2A2E2F;
+	font-weight: 500;
+}
+.mine-wallet-pay .mine-wallet-pay-title{
+	font-size: 0.76rem;
+	color: #999999;
+	padding: 1rem;
+	background-color: #F9F9F9;
+}
+.mine-wallet-pay .mine-wallet-pay-list{
+	background-color: #FFFFFF;
+}
+.mine-wallet-pay .mine-wallet-pay-list ul li{
+	margin: 0 1.2rem;
+	padding: 0.84rem 0;
+	border-bottom: 1px solid #E2E2EF;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.mine-wallet-pay .mine-wallet-pay-list ul li span:last-of-type{
+	display: inline-block;
+	width: 1.62rem;
+	height: 1.62rem;
+}
+.mine-wallet-pay .mine-wallet-pay-list ul li .mine-wallet-pay-list-selected{
+	background: url('../../image/mineWalletPay/selectActive.png') no-repeat left top;
+	background-size: 100% 100%;
+}
+.mine-wallet-pay .mine-wallet-pay-list ul li .mine-wallet-pay-list-select{
+	background: url('../../image/mineWalletPay/select.png') no-repeat left top;
+	background-size: 100% 100%;
+}
+/*自定义数额*/
+.mine-wallet-pay .mine-wallet-pay-diy{
+	/*display: none;*/
+	width: 100%;
+	height: 3.4rem;
+	line-height: 3.4rem;
+	text-align: center;
+	color: #999999;
+	background-color: #FFFFFF;
+}
+/*底部按钮*/
+.mine-wallet-pay .mine-wallet-pay-bottom{
+	/*display: none;*/
+	width: 100%;
+	height: 3.22rem;
+	background-color: #FFFFFF;
+	overflow: hidden;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+}
+.mine-wallet-pay .mine-wallet-pay-bottom .mine-wallet-pay-bottom-money{
+	float: left;
+	margin: 0 0 0 1.2rem;
+	line-height: 3.22rem;
+	font-size: 1.24rem;
+	color: #333333;
+	font-weight: normal;
+}
+.mine-wallet-pay .mine-wallet-pay-bottom .mine-wallet-pay-bottom-btn{
+	float: right;
+	width: 8.6rem;
+	height: 100%;
+	line-height: 1;
+	color: #FFFFFF;
+	background-color: #6C87FC;
+	text-align: center;
+}
+/*自定义数额模块*/
+.mine-wallet-pay .pay-diy{
+	display: none;
+	background-color: #FFFFFF;
+}
+.mine-wallet-pay .pay-diy .pay-diy-input{
+	color: #999999;
+	padding: 1.52rem 0 1.2rem 0.94rem;
+}
+.mine-wallet-pay .pay-diy .pay-diy-input span{
+	color: #6C87FC;
+	font-weight: normal;
+}
+.mine-wallet-pay .pay-diy .pay-diy-keyboard{
+	height: 14.53rem;
+	overflow: hidden;
+}
+.mine-wallet-pay .pay-diy .pay-diy-keyboard .pay-diy-keyboard-num{
+	float: left;
+	width: 75%;
+	height: 100%;
+}
+.mine-wallet-pay .pay-diy .pay-diy-keyboard .pay-diy-keyboard-num ul{
+	height: 100%;
+	display: flex;
+	flex-wrap: wrap;
+}
+.mine-wallet-pay .pay-diy .pay-diy-keyboard .pay-diy-keyboard-num ul li{
+	width: 33.3%;
+	height: 25%;
+	font-size: 1.59rem;
+	color: #2A2B2C;
+	font-weight: normal;
+	line-height: 2.5;
+	text-align: center;
+	border-right: 1px solid #CCCCCC;
+	border-top: 1px solid #CCCCCC;
+}
+.mine-wallet-pay .pay-diy .pay-diy-keyboard .pay-diy-keyboard-num ul .pay-diy-keyboard-num-keyboard{
+	background: url('../../image/mineWalletPay/keyboard.png') no-repeat center center;
+	background-size: 2.32rem 2.32rem;
+}
+.mine-wallet-pay .pay-diy .pay-diy-keyboard .pay-diy-keyboard-btn{
+	float: left;
+	width: 25%;
+	height: 100%;
+}
+.mine-wallet-pay .pay-diy .pay-diy-keyboard .pay-diy-keyboard-btn ul{
+	height: 100%;
+	display: flex;
+	flex-wrap: wrap;
+}
+.mine-wallet-pay .pay-diy .pay-diy-keyboard .pay-diy-keyboard-btn ul li{
+	width: 100%;
+	height: 50%;
+}
+.mine-wallet-pay .pay-diy .pay-diy-keyboard .pay-diy-keyboard-btn ul .pay-diy-keyboard-btn-delete{
+	border-top: 1px solid #CCCCCC;
+	background: url('../../image/mineWalletPay/delete.png') no-repeat center center;
+	background-size: 2.32rem 2.32rem;
+	background-color: #F6F6F7;
+}
+.mine-wallet-pay .pay-diy .pay-diy-keyboard .pay-diy-keyboard-btn ul .pay-diy-keyboard-btn-sure{
+	background-color: #6C87FC;
+	color: #FFFFFF;
+	font-size: 1.31rem;
+	font-weight: normal;
+	text-align: center;
+	line-height: 6;
+}
+/*遮罩*/
+.mine-wallet-pay .pay-mask{
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,0.35);
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	z-index: 111;
+}
+.mine-wallet-pay .pay-cashier-zfb, .pay-cashier-wx, .pay-type{
+	width: 100%;
+	height: 100%;
+}
+/*支付宝收银台*/
+.mine-wallet-pay .pay-cashier-zfb{
+	display: none;
+}
+.mine-wallet-pay .pay-cashier-zfb .pay-cashier-zfb-main{
+	width: 100%;
+	background-color: #FFFFFF;
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	z-index: 222;
+}
+.mine-wallet-pay .pay-cashier-zfb .pay-cashier-zfb-main .pay-cashier-zfb-title{
+	color: #333333;
+	border-bottom: 1px solid #E2E2EF;
+	text-align: center;
+	padding: 1rem 0;
+	position: relative;
+}
+.mine-wallet-pay .pay-cashier-zfb .pay-cashier-zfb-main .pay-cashier-zfb-title:before{
+	content: '';
+	display: inline-block;
+	width: 1.42rem;
+	height: 1.42rem;
+	background: url('../../image/mineWalletPay/close.png') no-repeat left top;
+	background-size: 100% 100%;
+	position: absolute;
+	left: 0.88rem;
+}
+.mine-wallet-pay .pay-cashier-zfb .pay-cashier-zfb-main .pay-cashier-zfb-content{
+	padding: 1.6rem 1.2rem 1.6rem;
+}
+.mine-wallet-pay .pay-cashier-zfb .pay-cashier-zfb-main .pay-cashier-zfb-content .pay-cashier-zfb-content-money{
+	font-size: 2.8rem;
+	color: #333333;
+	text-align: center;
+	padding: 1rem 0 0.5rem 0;
+}
+.mine-wallet-pay .pay-cashier-zfb .pay-cashier-zfb-main .pay-cashier-zfb-content .pay-cashier-zfb-content-type{
+	margin: 1.64rem 0 1.82rem;
+	overflow: hidden;
+}
+.mine-wallet-pay .pay-cashier-zfb .pay-cashier-zfb-main .pay-cashier-zfb-content .pay-cashier-zfb-content-type .pay-cashier-zfb-content-type-logo{
+	float: left;
+	display: inline-block;
+	width: 1.56rem;
+	height: 1.56rem;
+	background: url('../../image/mineWalletPay/zfbLogo.png') no-repeat left top;
+	background-size: 100% 100%;
+}
+.mine-wallet-pay .pay-cashier-zfb .pay-cashier-zfb-main .pay-cashier-zfb-content .pay-cashier-zfb-content-type .pay-cashier-zfb-content-type-name{
+	float: left;
+	color: #333333;
+	line-height: 1.56rem;
+	margin: 0 0 0 0.8rem;
+}
+.mine-wallet-pay .pay-cashier-zfb .pay-cashier-zfb-main .pay-cashier-zfb-content .pay-cashier-zfb-content-type .pay-cashier-zfb-content-type-more{
+	float: right;
+	display: inline-block;
+	width: 1.72rem;
+	height: 1.72rem;
+	background: url('../../image/mineWalletPay/moreArrow.png') no-repeat left top;
+	background-size: 100% 100%;
+}
+.mine-wallet-pay .pay-cashier-zfb .pay-cashier-zfb-main .pay-cashier-zfb-content .pay-cashier-zfb-content-btn{
+	width: 100%;
+	background-color: #6C87FC;
+	border-radius: 0.32rem;
+	text-align: center;
+}
+.mine-wallet-pay .pay-cashier-zfb .pay-cashier-zfb-main .pay-cashier-zfb-content .pay-cashier-zfb-content-btn button{
+	color: #FFFFFF;
+	padding: 0.72rem 0;
+}
+/*微信收银台*/
+.mine-wallet-pay .pay-cashier-wx{
+	display: none;
+}
+.mine-wallet-pay .pay-cashier-wx .pay-cashier-wx-main{
+	width: 100%;
+	background-color: #FFFFFF;
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	z-index: 222;
+}
+.mine-wallet-pay .pay-cashier-wx .pay-cashier-wx-main .pay-cashier-wx-title{
+	color: #333333;
+	border-bottom: 1px solid #E2E2EF;
+	text-align: center;
+	padding: 1rem 0;
+	position: relative;
+}
+.mine-wallet-pay .pay-cashier-wx .pay-cashier-wx-main .pay-cashier-wx-title:before{
+	content: '';
+	display: inline-block;
+	width: 1.42rem;
+	height: 1.42rem;
+	background: url('../../image/mineWalletPay/close.png') no-repeat left top;
+	background-size: 100% 100%;
+	position: absolute;
+	left: 0.88rem;
+}
+.mine-wallet-pay .pay-cashier-wx .pay-cashier-wx-main .pay-cashier-wx-content{
+	padding: 1.6rem 1.2rem 1.6rem;
+}
+.mine-wallet-pay .pay-cashier-wx .pay-cashier-wx-main .pay-cashier-wx-content .pay-cashier-wx-content-money{
+	font-size: 2.8rem;
+	color: #333333;
+	text-align: center;
+	padding: 1rem 0 0.5rem 0;
+}
+.mine-wallet-pay .pay-cashier-wx .pay-cashier-wx-main .pay-cashier-wx-content .pay-cashier-wx-content-type{
+	margin: 1.64rem 0 1.82rem;
+	overflow: hidden;
+}
+.mine-wallet-pay .pay-cashier-wx .pay-cashier-wx-main .pay-cashier-wx-content .pay-cashier-wx-content-type .pay-cashier-wx-content-type-logo{
+	float: left;
+	display: inline-block;
+	width: 1.56rem;
+	height: 1.56rem;
+	background: url('../../image/mineWalletPay/wxLogo.png') no-repeat left top;
+	background-size: 100% 100%;
+}
+.mine-wallet-pay .pay-cashier-wx .pay-cashier-wx-main .pay-cashier-wx-content .pay-cashier-wx-content-type .pay-cashier-wx-content-type-name{
+	float: left;
+	color: #333333;
+	line-height: 1.56rem;
+	margin: 0 0 0 0.8rem;
+}
+.mine-wallet-pay .pay-cashier-wx .pay-cashier-wx-main .pay-cashier-wx-content .pay-cashier-wx-content-type .pay-cashier-wx-content-type-more{
+	float: right;
+	display: inline-block;
+	width: 1.72rem;
+	height: 1.72rem;
+	background: url('../../image/mineWalletPay/moreArrow.png') no-repeat left top;
+	background-size: 100% 100%;
+}
+.mine-wallet-pay .pay-cashier-wx .pay-cashier-wx-main .pay-cashier-wx-content .pay-cashier-wx-content-btn{
+	width: 100%;
+	background-color: #6C87FC;
+	border-radius: 0.32rem;
+	text-align: center;
+}
+.mine-wallet-pay .pay-cashier-wx .pay-cashier-wx-main .pay-cashier-wx-content .pay-cashier-wx-content-btn button{
+	color: #FFFFFF;
+	padding: 0.72rem 0;
+}
+/*选择支付方式*/
+.mine-wallet-pay .pay-type{
+	display: none;
+}
+.mine-wallet-pay .pay-type .pay-type-main{
+	width: 100%;
+	background-color: #FFFFFF;
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	z-index: 222;
+}
+.mine-wallet-pay .pay-type .pay-type-title{
+	color: #333333;
+	border-bottom: 1px solid #E2E2EF;
+	text-align: center;
+	padding: 1rem 0;
+	position: relative;
+}
+.mine-wallet-pay .pay-type .pay-type-title:before{
+	content: '';
+	display: inline-block;
+	width: 1.42rem;
+	height: 1.42rem;
+	background: url('../../image/mineWalletPay/close.png') no-repeat left top;
+	background-size: 100% 100%;
+	position: absolute;
+	left: 0.88rem;
+}
+.mine-wallet-pay .pay-type .pay-type-content ul li{
+	padding: 0 1.2rem;
+}
+.mine-wallet-pay .pay-type ul li .pay-cashier-zfb-content-type{
+	margin: 1.64rem 0 1.82rem;
+	overflow: hidden;
+}
+.mine-wallet-pay .pay-type ul li .pay-cashier-zfb-content-type .pay-cashier-zfb-content-type-logo{
+	float: left;
+	display: inline-block;
+	width: 1.56rem;
+	height: 1.56rem;
+	background: url('../../image/mineWalletPay/zfbLogo.png') no-repeat left top;
+	background-size: 100% 100%;
+}
+.mine-wallet-pay .pay-type ul li .pay-cashier-zfb-content-type .pay-cashier-zfb-content-type-name{
+	float: left;
+	color: #333333;
+	line-height: 1.56rem;
+	margin: 0 0 0 0.8rem;
+}
+.mine-wallet-pay .pay-type ul li .pay-cashier-zfb-content-type .pay-cashier-zfb-content-type-more{
+	float: right;
+	display: inline-block;
+	width: 1.72rem;
+	height: 1.72rem;
+	background: url('../../image/mineWalletPay/moreArrow.png') no-repeat left top;
+	background-size: 100% 100%;
+}
+.mine-wallet-pay .pay-type ul li .pay-cashier-wx-content-type{
+	margin: 1.64rem 0 1.82rem;
+	overflow: hidden;
+}
+.mine-wallet-pay .pay-type ul li .pay-cashier-wx-content-type .pay-cashier-wx-content-type-logo{
+	float: left;
+	display: inline-block;
+	width: 1.56rem;
+	height: 1.56rem;
+	background: url('../../image/mineWalletPay/wxLogo.png') no-repeat left top;
+	background-size: 100% 100%;
+}
+.mine-wallet-pay .pay-type ul li .pay-cashier-wx-content-type .pay-cashier-wx-content-type-name{
+	float: left;
+	color: #333333;
+	line-height: 1.56rem;
+	margin: 0 0 0 0.8rem;
+}
+.mine-wallet-pay .pay-type ul li .pay-cashier-wx-content-type .pay-cashier-wx-content-type-more{
+	float: right;
+	display: inline-block;
+	width: 1.72rem;
+	height: 1.72rem;
+	background: url('../../image/mineWalletPay/moreArrow.png') no-repeat left top;
+	background-size: 100% 100%;
+}
