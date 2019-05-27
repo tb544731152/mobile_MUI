@@ -29,6 +29,14 @@
 	background: url('../image/index/maillist-active.png') no-repeat center 0.26rem;
 	background-size: 1.52rem 1.52rem;
 }
+.mui-bar .tab-circle{
+	background: url('../image/index/circle.png') no-repeat center 0.26rem;
+	background-size: 1.52rem 1.52rem;
+}
+.mui-bar-tab .tab-circle.mui-active{
+	background: url('../image/index/circle-active.png') no-repeat center 0.26rem;
+	background-size: 1.52rem 1.52rem;
+}
 .mui-bar .tab-mine{
 	background: url('../image/index/mine.png') no-repeat center 0.26rem;
 	background-size: 1.52rem 1.52rem;
