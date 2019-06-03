@@ -1,0 +1,44 @@
+div, ul, li, p, span, button{
+	padding: 0;
+	margin: 0;
+}
+ul, li{
+	list-style: none;
+}
+.universe-circle{
+	width: 100%;
+	min-height: 100vh;
+	background-color: #ffffff;
+}
+.universe-circle .universe-circle-margin{
+	width: 100%;
+	height: 0.94rem;
+	background-color: #F9F9F9;
+}
+.universe-circle .universe-circle-shop, ul li{
+	padding: 0.84rem 0;
+	margin: 0 0.84rem;
+	display: flex;
+	align-items: center;
+}
+.universe-circle .universe-circle-shop img, ul li img{
+	width: 2.19rem;
+	height: 2.19rem;
+}
+.universe-circle .universe-circle-shop p, ul li p{
+	font-size: 0.94rem;
+	color: #333333;
+	font-weight: 500;
+	margin: 0 0.94rem;
+}
+.universe-circle .universe-circle-shop span, ul li span{
+	display: inline-block;
+	width: 1.5rem;
+	height: 1.5rem;
+	background: url('../../image/universeCircle/moreArrow.png') no-repeat left top;
+	background-size: 100% 100%;
+	margin-left: auto;
+}
+.universe-circle li{
+	border-bottom: 1px solid #E2E2EF;
+}
